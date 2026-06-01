@@ -2035,6 +2035,377 @@
 				}
 
 			}
+ , 			{
+				"box" : 				{
+					"id" : "obj-6",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 0,
+					"patcher" : 					{
+						"fileversion" : 1,
+						"appversion" : 						{
+							"major" : 8,
+							"minor" : 2,
+							"revision" : 2,
+							"architecture" : "x64",
+							"modernui" : 1
+						}
+,
+						"classnamespace" : "box",
+						"rect" : [ 0.0, 26.0, 733.0, 516.0 ],
+						"bglocked" : 0,
+						"openinpresentation" : 0,
+						"default_fontsize" : 12.0,
+						"default_fontface" : 0,
+						"default_fontname" : "Arial",
+						"gridonopen" : 1,
+						"gridsize" : [ 15.0, 15.0 ],
+						"gridsnaponopen" : 1,
+						"objectsnaponopen" : 1,
+						"statusbarvisible" : 2,
+						"toolbarvisible" : 1,
+						"lefttoolbarpinned" : 0,
+						"toptoolbarpinned" : 0,
+						"righttoolbarpinned" : 0,
+						"bottomtoolbarpinned" : 0,
+						"toolbars_unpinned_last_save" : 0,
+						"tallnewobj" : 0,
+						"boxanimatetime" : 200,
+						"enablehscroll" : 1,
+						"enablevscroll" : 1,
+						"devicewidth" : 0.0,
+						"description" : "",
+						"digest" : "",
+						"tags" : "",
+						"style" : "",
+						"subpatcher_template" : "",
+						"showontab" : 1,
+						"assistshowspatchername" : 0,
+						"boxes" : [ 						{
+								"box" : 							{
+									"fontface" : 1,
+									"fontsize" : 18.0,
+									"id" : "obj-b1",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 14.0, 14.0, 220.0, 30.0 ],
+									"text" : "Network Bending"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b2",
+									"linecount" : 2,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 14.0, 46.0, 490.0, 34.0 ],
+									"text" : "nn~ bending exposes two APIs: activation buffers (bend decoder layer outputs at runtime) and weight parameters (permanently modify model weights). Send messages to the leftmost inlet of nn~."
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"fontface" : 1,
+									"id" : "obj-b3",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 14.0, 98.0, 220.0, 20.0 ],
+									"text" : "── ACTIVATION BUFFERS ──────────────────────"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b4",
+									"linecount" : 3,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 14.0, 118.0, 500.0, 47.0 ],
+									"text" : "bend_add_N  additive offset per dim, shape (768,), default zeros — use for bias or noise injection\nbend_mul_N  per-dim scale, shape (768,), default ones — set 0 to ablate, <1 attenuate, >1 amplify\nbend_noise_std_N  noise std scalar, default 0 — applied fresh each forward call"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b5",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 14.0, 175.0, 95.0, 22.0 ],
+									"text" : "get_buffers"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b6",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 116.0, 175.0, 280.0, 20.0 ],
+									"text" : "← print all bend buffer names to Max console"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b7",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 14.0, 205.0, 300.0, 22.0 ],
+									"text" : "get_buffer core.dec_transformer.bend_mul_2"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b8",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 320.0, 205.0, 220.0, 20.0 ],
+									"text" : "← read current values of a buffer"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b9",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 14.0, 235.0, 350.0, 22.0 ],
+									"text" : "set_buffer core.dec_transformer.bend_noise_std_4 0.3"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b10",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 370.0, 235.0, 280.0, 20.0 ],
+									"text" : "← inject noise (std 0.3) after decoder block 4"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b11",
+									"linecount" : 2,
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 14.0, 265.0, 400.0, 36.0 ],
+									"text" : "set_buffer core.dec_transformer.bend_mul_0 0. 0. 0. 0. 0. 0. 0. 0. 1. 1. 1. 1."
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b12",
+									"linecount" : 2,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 420.0, 265.0, 290.0, 34.0 ],
+									"text" : "← ablate first 8 dims at block 0 (set mul to 0). Provide all 768 values in practice."
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"fontface" : 1,
+									"id" : "obj-b13",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 14.0, 322.0, 220.0, 20.0 ],
+									"text" : "── WEIGHT PARAMETERS ──────────────────────"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b14",
+									"linecount" : 2,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 14.0, 342.0, 500.0, 34.0 ],
+									"text" : "Weight bending permanently modifies model parameters (attention projections, feedforward weights etc). Changes persist until reload. Use layers to discover available parameter names."
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b15",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 14.0, 386.0, 55.0, 22.0 ],
+									"text" : "layers"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b16",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 76.0, 386.0, 280.0, 20.0 ],
+									"text" : "← print all weight parameter names to console"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b17",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 14.0, 416.0, 430.0, 22.0 ],
+									"text" : "get_weights core.dec_transformer.blocks_first.0.attn.to_out.weight"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b18",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 450.0, 416.0, 220.0, 20.0 ],
+									"text" : "← read weight values"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b19",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 14.0, 446.0, 430.0, 22.0 ],
+									"text" : "set_weights core.dec_transformer.blocks_first.0.attn.to_out.weight <values ...>"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b20",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 450.0, 446.0, 220.0, 20.0 ],
+									"text" : "← write weight values (use reload to reset)"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b21",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "signal" ],
+									"patching_rect" : [ 580.0, 100.0, 150.0, 22.0 ],
+									"text" : "nn~ <model> <method>"
+								}
+
+							}
+, 						{
+								"box" : 							{
+									"id" : "obj-b22",
+									"linecount" : 3,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 580.0, 130.0, 150.0, 47.0 ],
+									"text" : "send all bending messages to the left inlet of your nn~ object"
+								}
+
+							}
+ ],
+						"lines" : [ 						{
+								"patchline" : 							{
+									"destination" : [ "obj-b21", 0 ],
+									"source" : [ "obj-b5", 0 ]
+								}
+
+							}
+, 						{
+								"patchline" : 							{
+									"destination" : [ "obj-b21", 0 ],
+									"source" : [ "obj-b7", 0 ]
+								}
+
+							}
+, 						{
+								"patchline" : 							{
+									"destination" : [ "obj-b21", 0 ],
+									"source" : [ "obj-b9", 0 ]
+								}
+
+							}
+, 						{
+								"patchline" : 							{
+									"destination" : [ "obj-b21", 0 ],
+									"source" : [ "obj-b11", 0 ]
+								}
+
+							}
+, 						{
+								"patchline" : 							{
+									"destination" : [ "obj-b21", 0 ],
+									"source" : [ "obj-b15", 0 ]
+								}
+
+							}
+, 						{
+								"patchline" : 							{
+									"destination" : [ "obj-b21", 0 ],
+									"source" : [ "obj-b17", 0 ]
+								}
+
+							}
+, 						{
+								"patchline" : 							{
+									"destination" : [ "obj-b21", 0 ],
+									"source" : [ "obj-b19", 0 ]
+								}
+
+							}
+ ]
+					}
+,
+					"patching_rect" : [ 490.0, 32.0, 62.0, 22.0 ],
+					"saved_object_attributes" : 				{
+						"description" : "",
+						"digest" : "",
+						"globalpatchername" : "",
+						"tags" : ""
+					}
+,
+					"text" : "p bending"
+				}
+
+			}
  ],
 		"lines" : [  ],
 		"dependency_cache" : [ 			{

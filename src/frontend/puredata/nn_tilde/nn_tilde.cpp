@@ -364,6 +364,38 @@ void nn_tilde_set_weights(t_nn_tilde *x, t_symbol *s, int argc, t_atom *argv) {
   x->m_model->set_layer_weights(layer_name, layer_weights);
 }
 
+void nn_tilde_buffers(t_nn_tilde *x) {
+  std::vector<std::string> buffers = x->m_model->get_available_buffers();
+  t_atom *out_atoms = new t_atom[buffers.size()];
+  for (int i = 0; i < buffers.size(); i++)
+    SETSYMBOL(&out_atoms[i], gensym(buffers[i].c_str()));
+  outlet_anything(x->m_outlet, gensym("buffers"), buffers.size(), out_atoms);
+  delete[] out_atoms;
+}
+
+void nn_tilde_get_buffer(t_nn_tilde *x, t_symbol *s) {
+  std::string buffer_name = s->s_name;
+  std::vector<float> values = x->m_model->get_named_buffer(buffer_name);
+  t_atom *out_atoms = new t_atom[values.size()];
+  for (int i = 0; i < values.size(); i++)
+    SETFLOAT(&out_atoms[i], values[i]);
+  outlet_anything(x->m_outlet, gensym("buffer"), values.size(), out_atoms);
+  delete[] out_atoms;
+}
+
+void nn_tilde_set_buffer(t_nn_tilde *x, t_symbol *s, int argc, t_atom *argv) {
+  if (argc < 1 || argv[0].a_type != A_SYMBOL) {
+    post("set_buffer: first argument must be a buffer name");
+    return;
+  }
+  std::string buffer_name = atom_getsymbol(argv)->s_name;
+  std::vector<float> values;
+  for (int i = 1; i < argc; i++)
+    if (argv[i].a_type == A_FLOAT)
+      values.push_back(argv[i].a_w.w_float);
+  x->m_model->set_named_buffer(buffer_name, values);
+}
+
 void startup_message() {
   std::string startmessage = "nn~ - ";
   startmessage += VERSION;
@@ -401,6 +433,12 @@ void nn_tilde_setup(void) {
   class_addmethod(nn_tilde_class, (t_method)nn_tilde_get_weights, gensym("get_weights"),
                   A_SYMBOL, A_NULL);
   class_addmethod(nn_tilde_class, (t_method)nn_tilde_set_weights, gensym("set_weights"),
+                  A_GIMME, A_NULL);
+  class_addmethod(nn_tilde_class, (t_method)nn_tilde_buffers, gensym("buffers"),
+                  A_NULL);
+  class_addmethod(nn_tilde_class, (t_method)nn_tilde_get_buffer, gensym("get_buffer"),
+                  A_SYMBOL, A_NULL);
+  class_addmethod(nn_tilde_class, (t_method)nn_tilde_set_buffer, gensym("set_buffer"),
                   A_GIMME, A_NULL);
 
   CLASS_MAINSIGNALIN(nn_tilde_class, t_nn_tilde, f);

@@ -150,6 +150,29 @@ public:
     } else {
       cerr << "model does not have attribute " << attribute_name << endl;
     }
+  } else if (attribute_name == "get_buffers") {
+    for (std::string buf : m_model->get_available_buffers())
+      cout << buf << endl;
+  } else if (attribute_name == "get_buffer") {
+    if (args.size() < 2) {
+      cerr << "get_buffer requires a buffer name" << endl;
+      return {};
+    }
+    auto values = m_model->get_named_buffer(std::string(args[1]));
+    atoms out;
+    for (float v : values)
+      out.push_back(v);
+    cout << out << endl;
+  } else if (attribute_name == "set_buffer") {
+    if (args.size() < 3) {
+      cerr << "set_buffer requires a buffer name and at least one value" << endl;
+      return {};
+    }
+    std::string buf_name = std::string(args[1]);
+    std::vector<float> values;
+    for (int i = 2; i < args.size(); i++)
+      values.push_back(float(args[i]));
+    m_model->set_named_buffer(buf_name, values);
   } else {
     cerr << "no corresponding method for " << attribute_name << endl;
   }

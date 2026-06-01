@@ -1,7 +1,7 @@
 # Copyright 2018 The Min-DevKit Authors. All rights reserved.
 # Use of this source code is governed by the MIT License found in the License.md file.
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../min-api)
 include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
@@ -44,7 +44,7 @@ add_library(
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE backend)
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 
 if (APPLE) # SEARCH FOR TORCH DYLIB IN THE LOADER FOLDER
@@ -74,6 +74,6 @@ if (CMAKE_OSX_ARCHITECTURES STREQUAL "arm64")
 endif()
 endif()
 
-if (MSVC)
+if (MSVC OR APPLE)
 	set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 endif()

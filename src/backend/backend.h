@@ -40,4 +40,8 @@ public:
   std::vector<std::string> get_available_layers();
   std::vector<float> get_layer_weights(std::string layer_name);
   void set_layer_weights(std::string layer_name, std::vector<float> weights);
+
+  std::vector<std::string> get_available_buffers();
+  std::vector<float> get_named_buffer(std::string buffer_name);
+  void set_named_buffer(std::string buffer_name, std::vector<float> values);
 };

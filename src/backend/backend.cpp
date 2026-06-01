@@ -423,6 +423,37 @@ void Backend::set_layer_weights(std::string layer_name,
   model_lock.unlock();
 }
 
+std::vector<std::string> Backend::get_available_buffers() {
+  std::vector<std::string> buffers;
+  std::unique_lock<std::mutex> model_lock(m_model_mutex);
+  for (const auto &buf : m_model.named_buffers())
+    buffers.push_back(buf.name);
+  model_lock.unlock();
+  return buffers;
+}
+
+std::vector<float> Backend::get_named_buffer(std::string buffer_name) {
+  std::unique_lock<std::mutex> model_lock(m_model_mutex);
+  torch::Tensor m_tensor;
+  for (const auto &buf : m_model.named_buffers())
+    if (buf.name == buffer_name)
+      m_tensor = buf.value.contiguous().to(CPU);
+  model_lock.unlock();
+  return std::vector<float>(m_tensor.data_ptr<float>(),
+                            m_tensor.data_ptr<float>() + m_tensor.numel());
+}
+
+void Backend::set_named_buffer(std::string buffer_name,
+                               std::vector<float> values) {
+  std::unique_lock<std::mutex> model_lock(m_model_mutex);
+  for (const auto &buf : m_model.named_buffers())
+    if (buf.name == buffer_name) {
+      torch::NoGradGuard no_grad;
+      buf.value.copy_(torch::from_blob(values.data(), buf.value.sizes()));
+    }
+  model_lock.unlock();
+}
+
 bool Backend::is_loaded() { return m_loaded; }
 
 void Backend::use_gpu(bool value) {

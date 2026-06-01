@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project(nn_tilde)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
