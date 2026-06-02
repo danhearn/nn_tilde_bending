@@ -35,6 +35,7 @@ public:
   // INLETS OUTLETS
   std::vector<std::unique_ptr<inlet<>>> m_inlets;
   std::vector<std::unique_ptr<outlet<>>> m_outlets;
+  std::unique_ptr<outlet<>> m_msg_outlet;
 
   // BACKEND RELATED MEMBERS
   std::unique_ptr<Backend> m_model;
@@ -142,6 +143,32 @@ public:
           } else {
             cerr << "model does not have attribute " << attribute_name << endl;
           }
+        } else if (attribute_name == "layers") {
+          for (std::string layer : m_model->get_available_layers())
+            cout << layer << endl;
+        } else if (attribute_name == "get_weights") {
+          if (args.size() < 2) {
+            cerr << "get_weights requires a layer name" << endl;
+            return {};
+          }
+          auto values = m_model->get_layer_weights(std::string(args[1]));
+          atoms out;
+          for (float v : values)
+            out.push_back(v);
+          if (m_msg_outlet)
+            m_msg_outlet->send(out);
+          else
+            cout << out << endl;
+        } else if (attribute_name == "set_weights") {
+          if (args.size() < 3) {
+            cerr << "set_weights requires a layer name and values" << endl;
+            return {};
+          }
+          std::string layer_name = std::string(args[1]);
+          std::vector<float> values;
+          for (int i = 2; i < args.size(); i++)
+            values.push_back(float(args[i]));
+          m_model->set_layer_weights(layer_name, values);
         } else if (attribute_name == "get_buffers") {
           for (std::string buf : m_model->get_available_buffers())
             cout << buf << endl;
@@ -154,7 +181,10 @@ public:
           atoms out;
           for (float v : values)
             out.push_back(v);
-          cout << out << endl;
+          if (m_msg_outlet)
+            m_msg_outlet->send(out);
+          else
+            cout << out << endl;
         } else if (attribute_name == "set_buffer") {
           if (args.size() < 3) {
             cerr << "set_buffer requires a buffer name and at least one value"
@@ -311,6 +341,8 @@ nn::nn(const atoms &args)
     m_out_buffer[i].initialize(m_buffer_size);
     m_out_model.push_back(std::make_unique<float[]>(m_buffer_size));
   }
+
+  m_msg_outlet = std::make_unique<outlet<>>(this, "(list) weight / buffer data", "");
 
   if (m_use_thread)
     m_compute_thread = std::make_unique<std::thread>(model_perform_loop, this);
